@@ -25,7 +25,7 @@ manager = VectorIndexManager(
 )
 
 # Create vector index
-manager.create_index(
+manager.create_hnsw_index(
     index_name="hnsw_index",
     dimensions=1536,
     attribute_name="embedding",
@@ -34,7 +34,7 @@ manager.create_index(
 )
 
 # Drop vector index
-manager.drop_index("hnsw_index")
+manager.drop_hnsw_index("hnsw_index")
 ```
 
 ### 2. MongoDBModel
