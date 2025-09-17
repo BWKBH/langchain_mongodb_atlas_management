@@ -13,7 +13,8 @@ class VectorIndexManager:
 		self.uri = os.getenv(uri_name)
 		self.client = MongoClient(self.uri)
 		self.collection = self.client[db_name][collection_name]
-	def create_index(self
+
+	def create_hnsw_index(self
 		, index_name: str
 		, dimensions: int
 		, attribute_name: str
@@ -65,7 +66,7 @@ class VectorIndexManager:
 		return print("New search index named " + result + " is building.")
 	
 
-	def drop_index(self, index_name: str):
+	def drop_hnsw_index(self, index_name: str):
 		try:
 			# Delete the search index
 			self.collection.drop_search_index(name=index_name)
