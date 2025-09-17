@@ -3,11 +3,12 @@ Easily manage MongoDB Atlas vector search with LangChain using OpenAI or Hugging
 
 
 # 🧰 Project Structure
+```
 langchain_mongodb_atlas_management/src
   ├── vector_index_manager.py   # VectorIndexManager
   ├── mongodb_model.py          # MongoDBModel
   └── README.md
-  
+```
   
 ## 🧩 Core Classes
 
