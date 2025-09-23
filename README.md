@@ -16,7 +16,7 @@ langchain_mongodb_atlas_management/src
 **Role**: Create or drop vector indexes in MongoDB Atlas.
 
 ```python
-from vector_index_manager import VectorIndexManager
+from mongodb_atlas import VectorIndexManager
 
 manager = VectorIndexManager(
     db_name="ragdb",
@@ -41,7 +41,7 @@ manager.drop_hnsw_index("hnsw_index")
 **Role**: Manage documents and configure the vector store.
 
 ```python
-from mongodb_model import MongoDBModel
+from mongodb_atlas import MongoDBModel
 
 db = MongoDBModel(DB_name="ragdb", collection_name="docs", uri_name="MONGODB_ATLAS_URI")
 
