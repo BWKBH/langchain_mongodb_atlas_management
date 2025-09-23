@@ -1,13 +1,21 @@
 # langchain_mongodb_atlas_management
 Easily manage MongoDB Atlas vector search with LangChain using OpenAI or HuggingFace embeddings.
 
+## install
+
+```bash
+git clone https://github.com/BWKBH/langchain_mongodb_atlas_management.git
+cd langchain_mongodb_atlas_management
+pip install -e .
+pip install -r requirements.txt
+```
 
 # 🧰 Project Structure
 ```
 langchain_mongodb_atlas_management/src
+  ├── __init__.py
   ├── vector_index_manager.py   # VectorIndexManager
-  ├── mongodb_model.py          # MongoDBModel
-  └── README.md
+  └── mongodb_model.py          # MongoDBModel
 ```
   
 ## 🧩 Core Classes
