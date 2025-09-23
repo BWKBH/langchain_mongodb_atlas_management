@@ -9,7 +9,7 @@ class MongoDBModel:
     def __init__ (self
         , DB_name : str
         , collection_name : str
-        , uri_name : str =""):
+        , uri_name : str ):
         self.Mongo_uri = os.getenv(uri_name) 
         self.client = MongoClient(self.Mongo_uri, server_api=ServerApi('1'))
         self.client.admin.command('ping')  
@@ -37,6 +37,8 @@ class MongoDBModel:
         , model_kwargs: Dict = {"device": "cpu"}
         , encode_kwargs: Dict = {"normalize_embeddings": True}
         ) -> MongoDBAtlasVectorSearch:
+        api_key=None
+        embedding=None
         if api_key_name :
             api_key=os.getenv(api_key_name)
         if embedding_model == "text-embedding-3-small":
@@ -48,14 +50,17 @@ class MongoDBModel:
                 , encode_kwargs=encode_kwargs
             )
 
-
-        # Create a MongoDB Atlas vector search instance
-        vector_store = MongoDBAtlasVectorSearch(
-            collection=self.collection  # Collection to store embeddings
-            ,   embedding=embedding  # Embedding to use
-            ,    relevance_score_fn=relevance_scores  # Similarity score function, can also be "euclidean" or "dotProduct"
-            ,    index_name=index_name  # Name of the vector search index
-            )
-        # Set the vector store
+        if embedding :
+            # Create a MongoDB Atlas vector search instance
+            vector_store = MongoDBAtlasVectorSearch(
+                collection=self.collection  # Collection to store embeddings
+                ,   embedding=embedding  # Embedding to use
+                ,    relevance_score_fn=relevance_scores  # Similarity score function, can also be "euclidean" or "dotProduct"
+                ,    index_name=index_name  # Name of the vector search index
+                )
+            # Set the vector store
+        else : 
+            raise Exception("Embedding model not found")
         self.vector_store = vector_store
         return vector_store
+

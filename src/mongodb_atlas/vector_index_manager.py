@@ -14,12 +14,16 @@ class VectorIndexManager:
 		self.client = MongoClient(self.uri)
 		self.collection = self.client[db_name][collection_name]
 
+
+	def is_readys(self,index_def: dict) -> bool:
+		return (bool(index_def.get("queryable")) or index_def.get("state") == "READY" or index_def.get("status") == "READY")
+
 	def create_hnsw_index(self
 		, index_name: str
 		, dimensions: int
 		, attribute_name: str
 		, similarity: str
-		, filter_attribute_names: list):
+		, filter_attribute_names: list =None):
 		
 		fields = [
 			{
@@ -31,11 +35,12 @@ class VectorIndexManager:
 		]
 
 		# Add all provided filter fields
-		for filter_attribute_name in filter_attribute_names:
-			fields.append({
-				"type": "filter",
-				"path": filter_attribute_name
-			})
+		if filter_attribute_names :
+			for filter_attribute_name in filter_attribute_names:
+				fields.append({
+					"type": "filter",
+					"path": filter_attribute_name
+				})
 
 		# Construct the SearchIndexModel
 		search_index_model = SearchIndexModel(
@@ -50,13 +55,15 @@ class VectorIndexManager:
 		result = self.collection.create_search_index(model=search_index_model)
 		
 		print("Polling to check if the index is ready. This may take up to a minute.")
-		predicate=None 
-
-		while True:
+		predicate = self.is_readys
+		
+		deadline = time.time() + 60  # 최대 60초 기다림
+		while time.time() < deadline:
 			indices = list(self.collection.list_search_indexes(result))
 			if indices and predicate(indices[0]):
-				break
+				return True
 			time.sleep(5)
+		return False 
 
 		# Wait for initial sync to complete
 		
@@ -78,3 +85,4 @@ class VectorIndexManager:
 		finally:
 			# Close the MongoDB client
 			self.client.close()
+
