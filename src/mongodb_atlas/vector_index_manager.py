@@ -21,8 +21,8 @@ class VectorIndexManager:
 	def create_hnsw_index(self
 		, index_name: str
 		, dimensions: int
-		, attribute_name: str
-		, similarity: str
+		, attribute_name: "embedding"
+		, similarity: str # consine, dotProduct, euclidean
 		, filter_attribute_names: list =None):
 		
 		fields = [
@@ -57,32 +57,21 @@ class VectorIndexManager:
 		print("Polling to check if the index is ready. This may take up to a minute.")
 		predicate = self.is_readys
 		
-		deadline = time.time() + 60  # 최대 60초 기다림
+		deadline = time.time() + 60 
 		while time.time() < deadline:
 			indices = list(self.collection.list_search_indexes(result))
 			if indices and predicate(indices[0]):
-				return True
+				return print("New search index named " + result + " is building.")
 			time.sleep(5)
-		return False 
-
-		# Wait for initial sync to complete
-		
-		if predicate is not None: 
-			predicate = lambda index: index.get("queryable") is True
-
-		return print("New search index named " + result + " is building.")
+		return print("Failed to create search index. Please check the logs.")
 	
 
 	def drop_hnsw_index(self, index_name: str):
 		try:
-			# Delete the search index
 			self.collection.drop_search_index(name=index_name)
-			# Print success message
 			print(f"Search index '{index_name}' has been successfully dropped.")
-		except Exception as e: 
-			# Print error message
+		except Exception as e:
 			print(f"Failed to delete search index '{index_name}': {e}")
 		finally:
-			# Close the MongoDB client
 			self.client.close()
 
